@@ -1,4 +1,5 @@
 import pygame
+from constants import LINE_WIDTH
 
 # Base class for game objects
 class CircleShape(pygame.sprite.Sprite):
@@ -23,6 +24,6 @@ class CircleShape(pygame.sprite.Sprite):
     
     def collides_with(self, other):
         collides_with = False
-        if (pygame.math.Vector2.distance_to(self.position,other.position) < (self.radius + other.radius)):
+        if (pygame.math.Vector2.distance_to(self.position,other.position) < (self.radius + other.radius - LINE_WIDTH*2)):
             collides_with = True
         return collides_with
