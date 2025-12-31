@@ -17,8 +17,27 @@ class Player(CircleShape):
         a = self.position + forward * self.radius
         b = self.position - forward * self.radius - right
         c = self.position - forward * self.radius + right
+
         return [a, b, c]
 
+    def equilateral_tri(self):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        increment1 = pygame.Vector2(0,1).rotate(self.rotation +120) * self.radius
+        increment2 = pygame.Vector2(0,1).rotate(self.rotation +240) * self.radius
+        a = self.position + forward * self.radius
+        b = self.position + increment1 * 1
+        c = self.position + increment2 * 1
+        
+        return [a,b,c]
+
+    def pentagon(self):
+        forward = pygame.Vector2(0,1).rotate(self.rotation)
+        draw_points = []
+        for i in range (0,5):
+            new_point = self.position + pygame.Vector2(0,1).rotate(self.rotation + 360/5 * i ) * self.radius
+            draw_points.append(new_point)
+        return draw_points
+        
     def draw(self, screen):
         pygame.draw.polygon(screen,"white", self.triangle(), LINE_WIDTH)
         
