@@ -10,6 +10,7 @@ class Player(CircleShape):
         CircleShape.__init__(self,x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.cooldown = 0
+        self.velocity = pygame.Vector2(0,0).rotate(0)
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -45,11 +46,28 @@ class Player(CircleShape):
         self.rotation += PLAYER_TURN_SPEED * dt
 
     def move(self,dt):
+       # unit_vector = pygame.Vector2(0,1)
+        #rotated_vector = unit_vector.rotate(self.rotation)
+        #rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
+        self.position += self.velocity * dt
+        
+    def drag(self,dt):
+    
+        if self.velocity.length_squared() <= 0:
+            self.velocity = pygame.Vector2(0,0).rotate(self.rotation)
+        else:
+            self.velocity -= self.velocity.normalize() * PLAYER_DRAG_FACTOR *dt
+      
+
+    def accel(self,dt):
         unit_vector = pygame.Vector2(0,1)
         rotated_vector = unit_vector.rotate(self.rotation)
-        rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
-        self.position += rotated_with_speed_vector
-
+        rotated_with_speed_vector = rotated_vector * PLAYER_ACCELERATION_FACTOR
+        self.velocity += rotated_with_speed_vector *dt
+        
+        if self.velocity.length_squared() >= PLAYER_TOP_SPEED:
+            self.velocity = self.velocity.normalize() * PLAYER_TOP_SPEED *dt
+            
     def shoot(self):
     
         if self.cooldown <= 0:
@@ -61,6 +79,8 @@ class Player(CircleShape):
         
     def update(self, dt):
         self.cooldown -= dt
+        self.drag(dt)
+        self.move(dt)
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -68,9 +88,9 @@ class Player(CircleShape):
         if keys[pygame.K_d]:
             self.rotate(dt)
         if keys[pygame.K_w]:
-            self.move(dt)
-        if keys[pygame.K_s]:
-            self.move(-dt)
+            self.accel(dt)
+       # if keys[pygame.K_s]:
+        #    self.move(-dt)
         if keys[pygame.K_SPACE]:
             self.shoot()
             
