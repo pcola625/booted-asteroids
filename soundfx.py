@@ -1,26 +1,33 @@
-"""
-//  soundfx.py
-//  
-//
-//  Created by Pete Colasacco on 1/2/26.
-//
+import random, glob, pygame
+from constants import PEWPEW_SOUND_LOCATION, SOUND_DIR
 
-"""
-from pyo import *
+class AssNoisesGen():
+    def __init__(self):
+        self.wavfiles = []
+        self.init_assfile_list()
+        self.die_noise = pygame.mixer.Sound(random.choice(self.wavfiles))
+        self.die_noise.set_volume(1)
 
-# 1. Boot and start the audio server
-s = Server().boot()
-s.start()
+    def init_assfile_list(self):
+        directory = SOUND_DIR  # set directory path
+        for filename in glob.iglob(f"{directory}/asteroid_*.wav"):  
+            
+            self.wavfiles.append(filename) 
+    def select_random_ass(self):
+        selected_sound = random.choice(self.wavfiles)
+        
+        self.die_noise = pygame.mixer.Sound(selected_sound)
+        self.die_noise.set_volume(1)
+    def play_current(self):
+        self.die_noise.play()
 
-# 2. Create a white noise source with an amplitude (mul) of 0.3
-noise = Noise(mul=0.3)
-
-# 3. Apply a Butterworth low-pass filter to the noise
-# freq parameter determines the filter cutoff frequency
-filter = ButLP(noise, freq=1000).out()
-
-# 4. Keep the script running until the user presses Enter
-input("Press Enter to stop the noise effect...")
-
-# 5. Stop the server when done
-s.stop()
+    def return_random_ass(self):
+        selected_sound = random.choice(self.wavfiles)
+        return_random_ass = pygame.mixer.Sound(selected_sound)
+        return_random_ass.set_volume(random.uniform(0.5,1))
+        return return_random_ass
+class PewPewGen():
+    def __init__(self):
+        self.pewpew = pygame.mixer.Sound(PEWPEW_SOUND_LOCATION) 
+    def play(self):
+        self.pewpew.play()

@@ -46,6 +46,7 @@ class Player(CircleShape):
         self.rotation += PLAYER_TURN_SPEED * dt
 
     def move(self,dt):
+        self.check_wraparound()
        # unit_vector = pygame.Vector2(0,1)
         #rotated_vector = unit_vector.rotate(self.rotation)
         #rotated_with_speed_vector = rotated_vector * PLAYER_SPEED * dt
@@ -76,6 +77,15 @@ class Player(CircleShape):
             unit_vector = pygame.Vector2(0,1)
             rotated_vector = unit_vector.rotate(self.rotation)
             newshot.velocity = rotated_vector * PLAYER_SHOOT_SPEED
+    def check_wraparound(self):
+        if self.position.x > SCREEN_WIDTH:
+            self.position.x = 0
+        if self.position.y > SCREEN_HEIGHT:
+            self.position.y = 0
+        if self.position.x < 0:
+            self.position.x = SCREEN_WIDTH
+        if self.position.y < 0:
+            self.position.y = SCREEN_HEIGHT
         
     def update(self, dt):
         self.cooldown -= dt

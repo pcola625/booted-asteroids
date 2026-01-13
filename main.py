@@ -1,4 +1,5 @@
 import pygame
+import time
 import sys
 from logger import log_state, log_event
 from constants import *
@@ -6,6 +7,7 @@ from player import Player
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
+#from soundfx import SoundEffectEngine
 
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
@@ -13,7 +15,14 @@ def main():
     print(f"Screen height: {SCREEN_HEIGHT}")
 
     pygame.init()
+    pygame.mixer.init()
 
+    shot_sound = pygame.mixer.Sound("sounds/pew-pew.wav")
+    playa_assplode = pygame.mixer.Sound("sounds/ship-blew-up.wav")
+    playa_assplode.set_volume(1)
+#    sfxe = SoundEffectEngine()
+    
+   
     #sets up game clock
     game_clock = pygame.time.Clock()
     dt = 0
@@ -56,8 +65,12 @@ def main():
         
         for ass in asteroids:
             if playa_1.collides_with(ass):
+#                sfxe.playWhiteNoise(1000,2,0.7)
+                playa_assplode.play()
                 log_event("player_hit")
                 print("Game over!")
+                while pygame.mixer.get_busy():
+                    time.sleep(3)
                 sys.exit()
             for shot in shots:
                 if ass.collides_with(shot):
